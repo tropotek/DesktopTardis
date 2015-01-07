@@ -74,7 +74,7 @@ public class TardisInterface implements SerialPortEventListener {
     {
         setComPort(comPort);
         setBaud(baud);
-        connectSerial();
+        //connectSerial();
     }
     
     
