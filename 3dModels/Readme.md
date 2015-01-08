@@ -1,4 +1,4 @@
-T.A.R.D.I.S. 3D Modlling
+T.A.R.D.I.S. 3D Modelling
 ========================
 
 See thingiverse for the TARDIS DELUX KIT model, he has done some great work here.
