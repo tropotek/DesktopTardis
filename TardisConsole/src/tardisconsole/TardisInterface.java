@@ -36,13 +36,13 @@ public class TardisInterface implements SerialPortEventListener {
     /** top light on/off */
     private boolean topLight = false;
     /** top light RGB color */
-    private String topColor = "FFFFFF";
+    private int topColor[] = {0, 0, 0};
     /** Delay in ms */
     private int topDelay = 500;
     /** Window light on/off */
     private boolean winLight = false;
     /** Window light default color */
-    private String winColor = "0000FF";
+    private int winColor[] = {0, 0, 0};
     /** Enable window color to be set by temp sensor.
      * @todo Disable the color input field if this is true.
      */
@@ -74,7 +74,7 @@ public class TardisInterface implements SerialPortEventListener {
     {
         setComPort(comPort);
         setBaud(baud);
-        //connectSerial();
+        connectSerial();
     }
     
     
@@ -219,8 +219,10 @@ public class TardisInterface implements SerialPortEventListener {
         this.topLight = topLight;
     }
 
-    public void setTopColor(String topColor) {
-        this.topColor = topColor;
+    public void setTopColor(int r, int g, int b) {
+        topColor[0] = r;
+        topColor[1] = g;
+        topColor[2] = b;
     }
 
     public void setTopDelay(int topDelay) {
@@ -231,8 +233,10 @@ public class TardisInterface implements SerialPortEventListener {
         this.winLight = winLight;
     }
 
-    public void setWinColor(String winColor) {
-        this.winColor = winColor;
+    public void setWinColor(int r, int g, int b) {
+        winColor[0] = r;
+        winColor[1] = g;
+        winColor[2] = b;
     }
 
     public void setWinTempSensor(boolean winTempSensor) {
@@ -255,7 +259,7 @@ public class TardisInterface implements SerialPortEventListener {
         return topLight;
     }
 
-    public String getTopColor() {
+    public int[] getTopColor() {
         return topColor;
     }
 
@@ -267,7 +271,7 @@ public class TardisInterface implements SerialPortEventListener {
         return winLight;
     }
 
-    public String getWinColor() {
+    public int[] getWinColor() {
         return winColor;
     }
 
@@ -283,8 +287,30 @@ public class TardisInterface implements SerialPortEventListener {
         return isPlayingTrack;
     }
     
+    public void playTrack(int i)
+    {
+        setTrackId(i);
+        // Send a message to the tardis to stop any existing and play new
+        System.out.println("Playing Track "+i);
+    }
     
     
+    
+    public String toString()
+    {
+        String str = 
+                "Temp: " + temp + "\n" +
+                "topLight: " + topLight + "\n" +
+                "topDelay: " + topDelay + "\n" +
+                "topColor: ["+topColor[0]+","+topColor[1]+","+topColor[2]+"]\n" +
+                "winLight: " + winLight + "\n" +
+                "winTempSensor: " + winTempSensor + "\n" +
+                "winColor: ["+winColor[0]+","+winColor[1]+","+winColor[2]+"]\n" +
+                "trackId: " + trackId + "\n" +
+                "isPlayingTrack: " + isPlayingTrack + "\n" 
+                ;
+        return str;
+    }
     
     
 }

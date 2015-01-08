@@ -85,7 +85,7 @@ void loop() {
    if (!wtv020sd16p.isBusy()) {
       // Play a tune
       randomSeed(analogRead(tempPin));
-      wtv020sd16p.asyncPlayVoice(random(0, 3));
+      //wtv020sd16p.asyncPlayVoice(random(0, 3));
     }
 
 

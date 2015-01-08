@@ -15,6 +15,12 @@ import tardisconsole.TardisInterface;
 public class TardisConsole {
 
     /**
+     * 
+     */
+    public static boolean DEBUG = true;
+    
+    
+    /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
@@ -27,6 +33,4 @@ public class TardisConsole {
 	frame.setVisible(true);
         
     }
-    
-    
 }
