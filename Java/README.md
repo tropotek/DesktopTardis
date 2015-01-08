@@ -1,11 +1,8 @@
-tardis-console
-==============
+T.A.R.D.I.S. Desktop Java UI
+============================
 
-A Java UI for the ttek TARDIS project
+A Java UI for the TARDIS project.
 
-
-More to come.....
-See thingiverse for the Printed TARDIS model http://www.thingiverse.com/thing:124033 
-
-
+This UI allows you to control the TARDIS lights and audio
+manually. It also displays the room temp.
 
