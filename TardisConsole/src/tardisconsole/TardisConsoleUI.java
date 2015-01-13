@@ -13,6 +13,12 @@ import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener; 
 import java.util.Enumeration;
 import java.util.ArrayList;
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.*;
+import java.awt.event.*;
+
+import java.beans.*; //property change stuff
 
 /**
  *
@@ -27,8 +33,7 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
     /**
      * Creates new form TardisConsoleUI
      */
-    public TardisConsoleUI(TardisInterface ti) {
-        this.ti = ti;
+    public TardisConsoleUI() {
         initComponents();
         
         // wait till connected
@@ -41,18 +46,14 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
             jComboBox1.setSelectedIndex(6);
             btnConnect.requestFocus();
         } else {
-            vd("Cannot find any available com ports...");
-            // TODO put error in an alert or similar.
-            // ...
-            // Then Exit abruptly.....
-            System.exit(0);
+            errorExit("Cannot find any available com ports.");
         }
         
         
     }
     
     /**
-     * TODO: Finish and populate ComPort dropdown.
+     * Populate ComPort dropdown array.
      */
     public void searchForPorts()
     {
@@ -61,10 +62,7 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
             CommPortIdentifier curPort = (CommPortIdentifier)foundPorts.nextElement();
             //get only serial ports
             if (curPort.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-                vd(curPort.getName());
                 ports.add(curPort.getName());
-//                window.cboxPorts.addItem(curPort.getName());
-//                portMap.put(curPort.getName(), curPort);
             }
         }
     }
@@ -194,11 +192,6 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         inputTopEnable.setSelected(true);
         inputTopEnable.setText("On/Off");
         inputTopEnable.setToolTipText("");
-        inputTopEnable.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                inputTopEnableStateChanged(evt);
-            }
-        });
         inputTopEnable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inputTopEnableActionPerformed(evt);
@@ -231,11 +224,6 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
 
         jTextField2.setText("255");
         jTextField2.setInputVerifier(new ColorTextVerifier());
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
-            }
-        });
         jTextField2.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 jTextField2FocusLost(evt);
@@ -252,9 +240,9 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
 
         jTextField3.setText("255");
         jTextField3.setInputVerifier(new ColorTextVerifier());
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+        jTextField3.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextField3FocusLost(evt);
             }
         });
 
@@ -268,9 +256,9 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
 
         jTextField4.setText("255");
         jTextField4.setInputVerifier(new ColorTextVerifier());
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
+        jTextField4.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextField4FocusLost(evt);
             }
         });
 
@@ -350,11 +338,6 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         inputWinEnable.setSelected(true);
         inputWinEnable.setText("On/Off");
         inputWinEnable.setToolTipText("");
-        inputWinEnable.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                inputWinEnableStateChanged(evt);
-            }
-        });
         inputWinEnable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inputWinEnableActionPerformed(evt);
@@ -380,9 +363,9 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
 
         jTextField5.setText("255");
         jTextField5.setInputVerifier(new ColorTextVerifier());
-        jTextField5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField5ActionPerformed(evt);
+        jTextField5.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextField5FocusLost(evt);
             }
         });
 
@@ -408,17 +391,17 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
 
         jTextField6.setText("255");
         jTextField6.setInputVerifier(new ColorTextVerifier());
-        jTextField6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField6ActionPerformed(evt);
+        jTextField6.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextField6FocusLost(evt);
             }
         });
 
         jTextField7.setText("255");
         jTextField7.setInputVerifier(new ColorTextVerifier());
-        jTextField7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField7ActionPerformed(evt);
+        jTextField7.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextField7FocusLost(evt);
             }
         });
 
@@ -436,8 +419,8 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
                         .addComponent(inputWinEnable)
                         .addGap(18, 18, 18)
                         .addComponent(inputTempEnable)
-                        .addGap(156, 156, 156)
-                        .addComponent(jTextField9))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -446,7 +429,7 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jSlider6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jSlider6, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
                                 .addGap(18, 18, 18)
                                 .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -584,95 +567,78 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void inputWinEnableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputWinEnableActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_inputWinEnableActionPerformed
-
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_btnCloseActionPerformed
 
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
-        // TODO add your handling code here:
-        javax.swing.JTextField source = (javax.swing.JTextField) evt.getSource();
-        int b = Integer.parseInt(source.getText());
-        updateTopColor(jSlider1.getValue(), jSlider2.getValue(), b);
-    }//GEN-LAST:event_jTextField4ActionPerformed
-
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-        // TODO add your handling code here:
-        javax.swing.JTextField source = (javax.swing.JTextField) evt.getSource();
-        int g = Integer.parseInt(source.getText());
-        updateTopColor(jSlider1.getValue(), g, jSlider3.getValue());
-    }//GEN-LAST:event_jTextField3ActionPerformed
-
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-        javax.swing.JTextField source = (javax.swing.JTextField) evt.getSource();
-        int r = Integer.parseInt(source.getText());
-        updateTopColor(r, jSlider2.getValue(), jSlider3.getValue());
-    }//GEN-LAST:event_jTextField2ActionPerformed
-
-    private void inputTopEnableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputTopEnableActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_inputTopEnableActionPerformed
-
-    private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
-        // TODO add your handling code here:
-        javax.swing.JTextField source = (javax.swing.JTextField) evt.getSource();
-        int r = Integer.parseInt(source.getText());
-        updateTopColor(r, jSlider5.getValue(), jSlider6.getValue());
-    }//GEN-LAST:event_jTextField5ActionPerformed
-
-    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
-        // TODO add your handling code here:
-        javax.swing.JTextField source = (javax.swing.JTextField) evt.getSource();
-        int g = Integer.parseInt(source.getText());
-        updateTopColor(jSlider4.getValue(), g, jSlider6.getValue());
-    }//GEN-LAST:event_jTextField6ActionPerformed
-
-    private void jTextField7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
-        // TODO add your handling code here:
-        javax.swing.JTextField source = (javax.swing.JTextField) evt.getSource();
-        int b = Integer.parseInt(source.getText());
-        updateTopColor(jSlider4.getValue(), jSlider5.getValue(), b);
-    }//GEN-LAST:event_jTextField7ActionPerformed
-
     
     
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
         // TODO add your handling code here:
-        updateTopColor(jSlider1.getValue(), jSlider2.getValue(), jSlider3.getValue());
+        JSlider source = (JSlider)evt.getSource();
+        if (!source.getValueIsAdjusting()) 
+            updateTopColor(jSlider1.getValue(), jSlider2.getValue(), jSlider3.getValue());
     }//GEN-LAST:event_jSlider1StateChanged
 
     private void jSlider2StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider2StateChanged
         // TODO add your handling code here:
-        updateTopColor(jSlider1.getValue(), jSlider2.getValue(), jSlider3.getValue());
+        JSlider source = (JSlider)evt.getSource();
+        Class c = source.getClass();
+        String controlName = c.getName();
+        if (controlName == "javax.swing.JSlider") {
+        if (!source.getValueIsAdjusting()) 
+            updateTopColor(jSlider1.getValue(), jSlider2.getValue(), jSlider3.getValue());
+        }
     }//GEN-LAST:event_jSlider2StateChanged
 
     private void jSlider3StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider3StateChanged
         // TODO add your handling code here:
-        updateTopColor(jSlider1.getValue(), jSlider2.getValue(), jSlider3.getValue());
+        JSlider source = (JSlider)evt.getSource();
+        Class c = source.getClass();
+        String controlName = c.getName();
+        if (controlName == "javax.swing.JSlider") {
+            if (!source.getValueIsAdjusting()) 
+                updateTopColor(jSlider1.getValue(), jSlider2.getValue(), jSlider3.getValue());
+        }
     }//GEN-LAST:event_jSlider3StateChanged
 
     
     
     private void jSlider4StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider4StateChanged
         // TODO add your handling code here:
-        updateWinColor(jSlider4.getValue(), jSlider5.getValue(), jSlider6.getValue());
+        JSlider source = (JSlider)evt.getSource();
+        Class c = source.getClass();
+        String controlName = c.getName();
+        if (controlName == "javax.swing.JSlider") {
+            if (!source.getValueIsAdjusting()) 
+                updateWinColor(jSlider4.getValue(), jSlider5.getValue(), jSlider6.getValue());
+        }
     }//GEN-LAST:event_jSlider4StateChanged
 
     private void jSlider5StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider5StateChanged
         // TODO add your handling code here:
-        updateWinColor(jSlider4.getValue(), jSlider5.getValue(), jSlider6.getValue());
+        JSlider source = (JSlider)evt.getSource();
+        Class c = source.getClass();
+        String controlName = c.getName();
+        if (controlName == "javax.swing.JSlider") {
+            if (!source.getValueIsAdjusting()) 
+                updateWinColor(jSlider4.getValue(), jSlider5.getValue(), jSlider6.getValue());
+        }
     }//GEN-LAST:event_jSlider5StateChanged
 
     private void jSlider6StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider6StateChanged
         // TODO add your handling code here:
-        updateWinColor(jSlider4.getValue(), jSlider5.getValue(), jSlider6.getValue());
+        JSlider source = (JSlider)evt.getSource();
+        Class c = source.getClass();
+        String controlName = c.getName();
+        if (controlName == "javax.swing.JSlider") {
+            if (!source.getValueIsAdjusting()) 
+                updateWinColor(jSlider4.getValue(), jSlider5.getValue(), jSlider6.getValue());
+        }
     }//GEN-LAST:event_jSlider6StateChanged
 
+    
     private void jTextField2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField2FocusLost
         // TODO add your handling code here:
         javax.swing.JTextField source = (javax.swing.JTextField) evt.getSource();
@@ -684,74 +650,109 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         // TODO add your handling code here:
         javax.swing.JTextField source = (javax.swing.JTextField) evt.getSource();
         int delay = Integer.parseInt(source.getText());
-        ti.setTopDelay(delay);
+        if (ti != null)
+            ti.setTopDelay(delay);
         tardisUpdated();
     }//GEN-LAST:event_jTextField1FocusLost
-
-    private void inputTopEnableStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_inputTopEnableStateChanged
-        // TODO add your handling code here:
-        javax.swing.JCheckBox source = (javax.swing.JCheckBox) evt.getSource();
-        ti.setTopLight(source.isSelected());
-        tardisUpdated();
-    }//GEN-LAST:event_inputTopEnableStateChanged
-
-    private void inputWinEnableStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_inputWinEnableStateChanged
-        // TODO add your handling code here:
-        javax.swing.JCheckBox source = (javax.swing.JCheckBox) evt.getSource();
-        ti.setWinLight(source.isSelected());
-        tardisUpdated();
-    }//GEN-LAST:event_inputWinEnableStateChanged
 
     private void inputTempEnableStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_inputTempEnableStateChanged
         // TODO add your handling code here:
         javax.swing.JCheckBox source = (javax.swing.JCheckBox) evt.getSource();
-        ti.setWinTempSensor(source.isSelected());
+        if (ti != null)
+            ti.setWinTempSensor(source.isSelected());
         tardisUpdated();
     }//GEN-LAST:event_inputTempEnableStateChanged
 
     private void inputTrackNoStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_inputTrackNoStateChanged
         // TODO add your handling code here:
         javax.swing.JSpinner source = (javax.swing.JSpinner) evt.getSource();
-        ti.setTrackId(Integer.parseInt(source.getValue().toString()));
+        if (ti != null)
+            ti.setTrackId(Integer.parseInt(source.getValue().toString()));
         tardisUpdated();
     }//GEN-LAST:event_inputTrackNoStateChanged
 
     private void btnPlayTrackMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPlayTrackMouseReleased
         // TODO add your handling code here:
-        ti.playTrack(Integer.parseInt(inputTrackNo.getValue().toString()));
+        if (ti != null)
+            ti.playTrack(Integer.parseInt(inputTrackNo.getValue().toString()));
         tardisUpdated();
     }//GEN-LAST:event_btnPlayTrackMouseReleased
 
     private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
         // TODO add your handling code here:
-        
-        vd(evt.getActionCommand());
         if (evt.getActionCommand() == "Connect") {
             btnConnect.setActionCommand("Disconnect");
             btnConnect.setText("Disconnect");
             try {
                 int baud = Integer.valueOf(jComboBox1.getSelectedItem().toString());
                 ti = new TardisInterface(jComboBox2.getSelectedItem().toString(), baud);
-
                 // Set button to a dissconnect button....
-
                 // If all connected ok then enable the tardis controls
                 enableTardis(true);
 
             } catch (Exception e) {
-                vd(e.toString());
+                JOptionPane.showMessageDialog(this, e.toString()
+                    ,"Error: Cannot connect to TARDIS", JOptionPane.ERROR_MESSAGE);
             }
         } else {
             btnConnect.setActionCommand("Connect");
             btnConnect.setText("Connect");
             ti.close();
+            ti = null;
             enableTardis(false);
-            
         }
-        
-        
-        
     }//GEN-LAST:event_btnConnectActionPerformed
+
+    private void jTextField3FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField3FocusLost
+        // TODO add your handling code here:
+        javax.swing.JTextField source = (javax.swing.JTextField) evt.getSource();
+        int g = Integer.parseInt(source.getText());
+        updateTopColor(jSlider1.getValue(), g, jSlider3.getValue());
+    }//GEN-LAST:event_jTextField3FocusLost
+
+    private void jTextField4FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField4FocusLost
+        // TODO add your handling code here:
+        javax.swing.JTextField source = (javax.swing.JTextField) evt.getSource();
+        int b = Integer.parseInt(source.getText());
+        updateTopColor(jSlider1.getValue(), jSlider2.getValue(), b);
+    }//GEN-LAST:event_jTextField4FocusLost
+
+    private void jTextField5FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField5FocusLost
+        // TODO add your handling code here:
+        javax.swing.JTextField source = (javax.swing.JTextField) evt.getSource();
+        int r = Integer.parseInt(source.getText());
+        updateTopColor(r, jSlider5.getValue(), jSlider6.getValue());
+    }//GEN-LAST:event_jTextField5FocusLost
+
+    private void jTextField6FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField6FocusLost
+        // TODO add your handling code here:
+        javax.swing.JTextField source = (javax.swing.JTextField) evt.getSource();
+        int g = Integer.parseInt(source.getText());
+        updateTopColor(jSlider4.getValue(), g, jSlider6.getValue());
+    }//GEN-LAST:event_jTextField6FocusLost
+
+    private void jTextField7FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField7FocusLost
+        // TODO add your handling code here:
+        javax.swing.JTextField source = (javax.swing.JTextField) evt.getSource();
+        int b = Integer.parseInt(source.getText());
+        updateTopColor(jSlider4.getValue(), jSlider5.getValue(), b);
+    }//GEN-LAST:event_jTextField7FocusLost
+
+    private void inputTopEnableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputTopEnableActionPerformed
+        // TODO add your handling code here:
+        javax.swing.JCheckBox source = (javax.swing.JCheckBox) evt.getSource();
+        if (ti != null)
+          ti.setTopLight(source.isSelected());
+        tardisUpdated();
+    }//GEN-LAST:event_inputTopEnableActionPerformed
+
+    private void inputWinEnableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputWinEnableActionPerformed
+        // TODO add your handling code here:
+        javax.swing.JCheckBox source = (javax.swing.JCheckBox) evt.getSource();
+        if (ti != null)
+          ti.setWinLight(source.isSelected());
+        tardisUpdated();
+    }//GEN-LAST:event_inputWinEnableActionPerformed
 
     
     private void updateTopColor(int r, int g, int b)
@@ -779,11 +780,11 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         jSlider4.setValue(r);
         jSlider5.setValue(g);
         jSlider6.setValue(b);
-        
-        ti.setWinColor(jSlider4.getValue(), jSlider5.getValue(), jSlider6.getValue());
         jTextField9.setBackground(new java.awt.Color(jSlider4.getValue(), jSlider5.getValue(), jSlider6.getValue()));
-        
-        tardisUpdated();
+        if (ti != null) {
+            ti.setWinColor(jSlider4.getValue(), jSlider5.getValue(), jSlider6.getValue());
+            tardisUpdated();
+        }
     }
     
     public void enableTardis(boolean b)
@@ -844,10 +845,18 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
      */
     public void tardisUpdated()
     {
-        //vd(ti.toString());
-        
+        if (ti == null) {
+            return;
+        }
+        ti.writeSettings();
     }
     
+    public void errorExit(String msg) 
+    {
+        JOptionPane.showMessageDialog(this, msg 
+                ,"Error, Exiting.", JOptionPane.ERROR_MESSAGE);
+        System.exit(0);
+    }
     
     public static void vd(String str)
     {

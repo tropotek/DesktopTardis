@@ -1,4 +1,3 @@
-#line 1 "TardisLights.ino"
 /*
  *  TARDIS LIGHTS
  * Author: Michael Mifsud <http://www.tropotek.com/>

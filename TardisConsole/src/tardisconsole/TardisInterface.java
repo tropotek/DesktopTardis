@@ -12,6 +12,7 @@ import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent; 
 import gnu.io.SerialPortEventListener; 
+import java.util.Arrays;
 import java.util.Enumeration;
 
 
@@ -32,45 +33,39 @@ public class TardisInterface implements SerialPortEventListener {
     
     
     /** Temp in Deg C */
-    private int temp = 0;
+    private double temp = 0;
     /** top light on/off */
-    private boolean topLight = false;
-    /** top light RGB color */
-    private int topColor[] = {0, 0, 0};
+    private boolean topLedEnabled = true;
     /** Delay in ms */
     private int topDelay = 500;
+    /** top light RGB color */
+    private int[] topLed = {255, 255, 255};
+    
     /** Window light on/off */
-    private boolean winLight = false;
-    /** Window light default color */
-    private int winColor[] = {0, 0, 0};
+    private boolean winLedEnabled = true;
     /** Enable window color to be set by temp sensor.
      * @todo Disable the color input field if this is true.
      */
-    private boolean winTempSensor = false;
+    private boolean winTempLed = true;
+    /** Window light default color */
+    private int[] winLed = {255, 255, 255};
+    
     /** The current track ID */
     private int trackId = 0;
     /** is true if the track is currently playing */
     private boolean isPlayingTrack = false;
+    /** If true the next time an update is sent the selected track should begin playing */
+    private boolean playTrack = false;
     
     
-    
-    /**
-     * _constructor
-     * 
-     */
-    public TardisInterface()
-    {
         
-        
-    }
-    
     /**
      * _constructor
      * 
      * @param comPort
      * @param baud 
      */
-    public TardisInterface(String comPort, int baud)
+    public TardisInterface(String comPort, int baud) throws Exception
     {
         setComPort(comPort);
         setBaud(baud);
@@ -81,22 +76,20 @@ public class TardisInterface implements SerialPortEventListener {
     /**
      * 
      */
-    public void connectSerial() 
+    public void connectSerial() throws Exception 
     {
         CommPortIdentifier portId = null;
         Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
-
         //First, Find an instance of serial port as set in PORT_NAMES.
         while (portEnum.hasMoreElements()) {
             CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
-            
-            System.out.println(currPortId.getName());
-            
+            //System.out.println(currPortId.getName());
             if (currPortId.getName().equals(comPort)) {
                 portId = currPortId;
                 break;
             }
         }
+        
         if (portId == null) {
             System.out.println("Could not find COM port: " + comPort);
             return;
@@ -122,8 +115,9 @@ public class TardisInterface implements SerialPortEventListener {
             // add event listeners
             serialPort.addEventListener(this);
             serialPort.notifyOnDataAvailable(true);
+            System.out.println("TARDIS: Connected");
         } catch (Exception e) {
-            System.err.println(e.toString());
+            throw e;
         }
     }
     
@@ -132,6 +126,7 @@ public class TardisInterface implements SerialPortEventListener {
         if (serialPort != null) {
             serialPort.removeEventListener();
             serialPort.close();
+            System.out.println("TARDIS: Disconnected");
         }
     }
 
@@ -140,7 +135,7 @@ public class TardisInterface implements SerialPortEventListener {
         if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             try {
                 String inputLine = input.readLine();
-                System.out.println(inputLine);
+                readData(inputLine);
             } catch (Exception e) {
                 System.err.println(e.toString());
             }
@@ -152,31 +147,65 @@ public class TardisInterface implements SerialPortEventListener {
     {
         System.out.println("Sent: " + data);
         try {
+            data += "\n";
             output.write(data.getBytes());
         } catch (Exception e) {
-            System.out.println("could not write to port");
+            System.out.println("Could not write to port: " + e.toString());
         }
     }
  
-    
-    
-    
     /**
      * 
      */
-    public void readSettings()
+    public void readData(String str)
     {
        // Read the settings from the TARDIS Serial Port
-        
-        
-        
+       if (str.startsWith("#")) { // Is a system comment/log
+           System.out.println("System Comment: " + str);
+           return;
+       }
+       if (str.startsWith("S00")) { // receving TARDIS update
+           String[] data = str.substring(4).split(" ");
+           
+           temp = Double.parseDouble(data[0]);
+           topLedEnabled = ("1" == data[1]);
+           topDelay = Integer.parseInt(data[2]);
+           topLed[0] = Integer.parseInt(data[3]);
+           topLed[1] = Integer.parseInt(data[4]);
+           topLed[2] = Integer.parseInt(data[5]);
+           winLedEnabled = ("1" == data[6]);
+           winTempLed = ("1" == data[7]);
+           winLed[0] = Integer.parseInt(data[8]);
+           winLed[1] = Integer.parseInt(data[9]);
+           winLed[2] = Integer.parseInt(data[10]);
+           trackId = Integer.parseInt(data[11]);
+           isPlayingTrack = ("1" == data[12]);
+//           System.out.println(this.toString());
+       }
+       System.out.println(str);
     }
     
     public void writeSettings()
     {
         // Write these settings to the serial port.
+        //writeData("Send Test");
+        //writeData("S00");   // Command to get the Tardis system data
+        String data = "S01 " +
+            temp+" "+
+            topLedEnabled+" "+
+            topDelay+" "+
+            topLed[0]+" "+
+            topLed[1]+" "+
+            topLed[2]+" "+
+            winLedEnabled+" "+
+            winTempLed+" "+
+            winLed[0]+" "+
+            winLed[1]+" "+
+            winLed[2]+" "+
+            trackId+" "+
+            isPlayingTrack;
         
-        
+        writeData(data);
     }
     
     
@@ -185,19 +214,15 @@ public class TardisInterface implements SerialPortEventListener {
      * 
      * @param s 
      */
-    public void setComPort(String s) 
-    {
-        // TODO: validate port
+    public void setComPort(String s) {
         comPort = s;
     }
-    
     
     /**
      * 
      * @param i 
      */
-    public void setBaud(int i)
-    {
+    public void setBaud(int i) {
         //"4800", "9600", "14400", "19200", "28800", "38400", "57600", "115200"
         switch(i) {
             case 4800:
@@ -215,14 +240,15 @@ public class TardisInterface implements SerialPortEventListener {
         }
     }
 
+    
     public void setTopLight(boolean topLight) {
-        this.topLight = topLight;
+        this.topLedEnabled = topLight;
     }
 
     public void setTopColor(int r, int g, int b) {
-        topColor[0] = r;
-        topColor[1] = g;
-        topColor[2] = b;
+        topLed[0] = r;
+        topLed[1] = g;
+        topLed[2] = b;
     }
 
     public void setTopDelay(int topDelay) {
@@ -230,17 +256,17 @@ public class TardisInterface implements SerialPortEventListener {
     }
 
     public void setWinLight(boolean winLight) {
-        this.winLight = winLight;
+        this.winLedEnabled = winLight;
     }
 
     public void setWinColor(int r, int g, int b) {
-        winColor[0] = r;
-        winColor[1] = g;
-        winColor[2] = b;
+        winLed[0] = r;
+        winLed[1] = g;
+        winLed[2] = b;
     }
 
     public void setWinTempSensor(boolean winTempSensor) {
-        this.winTempSensor = winTempSensor;
+        this.winTempLed = winTempSensor;
     }
 
     public void setTrackId(int trackId) {
@@ -251,16 +277,16 @@ public class TardisInterface implements SerialPortEventListener {
     
     
 
-    public int getTemp() {
+    public double getTemp() {
         return temp;
     }
 
     public boolean isTopLight() {
-        return topLight;
+        return topLedEnabled;
     }
 
     public int[] getTopColor() {
-        return topColor;
+        return topLed;
     }
 
     public int getTopDelay() {
@@ -268,15 +294,15 @@ public class TardisInterface implements SerialPortEventListener {
     }
 
     public boolean isWinLight() {
-        return winLight;
+        return winLedEnabled;
     }
 
     public int[] getWinColor() {
-        return winColor;
+        return winLed;
     }
 
     public boolean isWinTempSensor() {
-        return winTempSensor;
+        return winTempLed;
     }
 
     public int getTrackId() {
@@ -300,12 +326,12 @@ public class TardisInterface implements SerialPortEventListener {
     {
         String str = 
                 "Temp: " + temp + "\n" +
-                "topLight: " + topLight + "\n" +
+                "topLight: " + topLedEnabled + "\n" +
                 "topDelay: " + topDelay + "\n" +
-                "topColor: ["+topColor[0]+","+topColor[1]+","+topColor[2]+"]\n" +
-                "winLight: " + winLight + "\n" +
-                "winTempSensor: " + winTempSensor + "\n" +
-                "winColor: ["+winColor[0]+","+winColor[1]+","+winColor[2]+"]\n" +
+                "topColor: ["+topLed[0]+","+topLed[1]+","+topLed[2]+"]\n" +
+                "winLight: " + winLedEnabled + "\n" +
+                "winTempSensor: " + winTempLed + "\n" +
+                "winColor: ["+winLed[0]+","+winLed[1]+","+winLed[2]+"]\n" +
                 "trackId: " + trackId + "\n" +
                 "isPlayingTrack: " + isPlayingTrack + "\n" 
                 ;

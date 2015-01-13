@@ -26,8 +26,7 @@ public class TardisConsole {
     public static void main(String[] args) {
         
         //Create and set up the window.	 
-	//javax.swing.JFrame frame = new TardisConsoleUI(new TardisInterface());
-	javax.swing.JFrame frame = new TardisConsoleUI(new TardisInterface("COM4", 57600));
+	javax.swing.JFrame frame = new TardisConsoleUI();
         //Display the window.
 	frame.pack(); 
 	frame.setVisible(true);
