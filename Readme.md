@@ -21,7 +21,7 @@ Folder Contents:
 
  - **3DModels**: 3DModels needed to print the TARDIS on a 3D Printer.
    TARDIS Model can be found here: http://www.thingiverse.com/thing:124033 
- - **Arduino**: Arduino Sketches and sound module lib files
- - **Electronics**: The basic schematics used to build the TARDIS circuit
+ - **Arduino**: Tardis Firmware code.
+ - **Electronics**: The basic schematics used to build the TARDIS circuit.
  - **TardisConsole**: The Java Desktop UI to control the TARDIS from your PC 
    using a serial port.
