@@ -689,7 +689,10 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
                 // Set button to a dissconnect button....
                 // If all connected ok then enable the tardis controls
                 enableTardis(true);
-
+                
+                // NOT WORKING because read data will not be received at this point, considder setting up
+                // a timed loop to update teh temp on the screen. 
+                jLabel1.setText(ti.getTemp()+"°C");
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, e.toString()
                     ,"Error: Cannot connect to TARDIS", JOptionPane.ERROR_MESSAGE);
@@ -849,6 +852,8 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
             return;
         }
         ti.writeSettings();
+        
+        jLabel1.setText(ti.getTemp()+"°C");
     }
     
     public void errorExit(String msg) 

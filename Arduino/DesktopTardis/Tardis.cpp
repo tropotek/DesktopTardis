@@ -21,22 +21,32 @@ Tardis::Tardis(int *topLedPins, int *winLedPins, int *audioPins, int tempPin) :
   _trackId = 0;
   _playTrack = false;
   
-  
 }
  
 void Tardis::loop()
 {
-  // TODO: run requested animations 
+   // TODO: run requested animations
    
    
    _frame++;
 }
+
+  void Tardis::saveState(String s)
+  {
+    Serial.println("# saving TARDIS state");
+    
+    // TODO
+    
+  }
  
 // Return the tardis state as a string
 void Tardis::sendState()
 {
   Serial.print("S00 ");
+
   Serial.print(getTemp(), 2);        // Temprature value in DegC
+  Serial.print(" ");
+  
   Serial.print(" ");
   Serial.print(_topLedEnabled);      // Top Light Enabled
   Serial.print(" ");
@@ -80,6 +90,7 @@ void Tardis::sendState()
 double Tardis::getTemp()
 {
   double kelvin = analogRead(_tempPin);
+    
   kelvin = 1023 / kelvin - 1;
   kelvin = T_SERIESRESISTOR / kelvin;
   kelvin =  kelvin/ T_THERMISTORNOMINAL; // (R/Ro)
@@ -87,8 +98,7 @@ double Tardis::getTemp()
   kelvin /= T_BCOEFFICIENT; // 1/B * ln(R/Ro)
   kelvin += 1.0 / (T_TEMPERATURENOMINAL + 273.15); // + (1/To)
   kelvin = 1.0 / kelvin; // Invert
-  double celsius = kelvin - 273.15;
-  return celsius;
+  return (kelvin - 273.15);
 }
  
  

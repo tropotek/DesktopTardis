@@ -70,6 +70,7 @@ public class TardisInterface implements SerialPortEventListener {
         setComPort(comPort);
         setBaud(baud);
         connectSerial();
+        writeData("S00"); // request Tardis state
     }
     
     
@@ -159,37 +160,31 @@ public class TardisInterface implements SerialPortEventListener {
      */
     public void readData(String str)
     {
-       // Read the settings from the TARDIS Serial Port
-       if (str.startsWith("#")) { // Is a system comment/log
-           System.out.println("System Comment: " + str);
-           return;
-       }
-       if (str.startsWith("S00")) { // receving TARDIS update
-           String[] data = str.substring(4).split(" ");
-           
-           temp = Double.parseDouble(data[0]);
-           topLedEnabled = ("1" == data[1]);
-           topDelay = Integer.parseInt(data[2]);
-           topLed[0] = Integer.parseInt(data[3]);
-           topLed[1] = Integer.parseInt(data[4]);
-           topLed[2] = Integer.parseInt(data[5]);
-           winLedEnabled = ("1" == data[6]);
-           winTempLed = ("1" == data[7]);
-           winLed[0] = Integer.parseInt(data[8]);
-           winLed[1] = Integer.parseInt(data[9]);
-           winLed[2] = Integer.parseInt(data[10]);
-           trackId = Integer.parseInt(data[11]);
-           isPlayingTrack = ("1" == data[12]);
-//           System.out.println(this.toString());
-       }
-       System.out.println(str);
+        System.out.println("rcv: " + str);
+        // Read the settings from the TARDIS Serial Port
+        if (str.startsWith("#")) { // Is a system comment/log
+            System.out.println(str.substring(2));
+        } else if (str.startsWith("S00")) { // receving TARDIS update
+            String[] data = str.substring(4).split(" ");
+
+            temp = Double.parseDouble(data[0]);
+            topLedEnabled = ("1" == data[1]);
+            topDelay = Integer.parseInt(data[2]);
+            topLed[0] = Integer.parseInt(data[3]);
+            topLed[1] = Integer.parseInt(data[4]);
+            topLed[2] = Integer.parseInt(data[5]);
+            winLedEnabled = ("1" == data[6]);
+            winTempLed = ("1" == data[7]);
+            winLed[0] = Integer.parseInt(data[8]);
+            winLed[1] = Integer.parseInt(data[9]);
+            winLed[2] = Integer.parseInt(data[10]);
+            trackId = Integer.parseInt(data[11]);
+            isPlayingTrack = ("1" == data[12]);
+        }
     }
     
     public void writeSettings()
     {
-        // Write these settings to the serial port.
-        //writeData("Send Test");
-        //writeData("S00");   // Command to get the Tardis system data
         String data = "S01 " +
             temp+" "+
             topLedEnabled+" "+
@@ -203,9 +198,17 @@ public class TardisInterface implements SerialPortEventListener {
             winLed[1]+" "+
             winLed[2]+" "+
             trackId+" "+
-            isPlayingTrack;
-        
+            isPlayingTrack+" "+
+            playTrack+" "+    // Play track switch 
+            "0 " +  // Reserved
+            "0 " +  // Reserved
+            "0 " +  // Reserved
+            "0 " +  // Reserved
+            "0 "    // Reserved
+            ;
+        playTrack = false;  // Once sent then no longer needed
         writeData(data);
+        writeData("S00"); // request Tardis state
     }
     
     
@@ -273,9 +276,6 @@ public class TardisInterface implements SerialPortEventListener {
         this.trackId = trackId;
     }
     
-    
-    
-    
 
     public double getTemp() {
         return temp;
@@ -316,8 +316,7 @@ public class TardisInterface implements SerialPortEventListener {
     public void playTrack(int i)
     {
         setTrackId(i);
-        // Send a message to the tardis to stop any existing and play new
-        System.out.println("Playing Track "+i);
+        playTrack = true;
     }
     
     

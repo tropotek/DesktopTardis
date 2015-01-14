@@ -21,7 +21,6 @@
 // the value of the 'other' resistor (100K)
 #define T_SERIESRESISTOR 10000 
 
-
 class Tardis
 {
 public:
@@ -36,6 +35,8 @@ public:
   // ----------- Serial Command Functions ---------------
   // Get the system state string
   void sendState();
+  
+  void saveState(String s);
   
   
   

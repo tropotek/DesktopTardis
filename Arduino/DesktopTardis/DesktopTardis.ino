@@ -67,6 +67,8 @@ void loop() {
 void processCmd(String s) {
   if (s == "S00") {  // Write system state to Serial out
     tardis.sendState();
+  } else if (s == "S01") {  // write state to Tardis object
+    tardis.saveState(s);
   }
 }
 
