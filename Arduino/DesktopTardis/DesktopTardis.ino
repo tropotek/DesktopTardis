@@ -43,7 +43,8 @@ int fps = 10; // Frames per second for the animation loop
 void setup() {  
   Serial.begin(57600);
   Serial.println("# Initalising: TARDIS  v0.1 [07/01/2015]");
-  Serial.println("# Support: http://zap.tropotek.com.au/");    
+  Serial.println("# Support: http://zap.tropotek.com.au/");
+  tardis.sendState();
 }
 
 
@@ -67,10 +68,42 @@ void loop() {
 void processCmd(String s) {
   if (s == "S00") {  // Write system state to Serial out
     tardis.sendState();
-  } else if (s == "S01") {  // write state to Tardis object
-    tardis.saveState(s);
+  } else if (s.startsWith("S01")) {  // write state to Tardis object
+    char cs[100];
+    s.toCharArray(cs, 100);
+    tardis.saveState(split(cs, " "));
   }
 }
 
 
+
+
+
+char** split(char str[], const char* delimiters) {
+    int result_size = countDelimiters(str, delimiters);
+    int i = 0;
+    char* result[result_size];
+    char* pch = strtok(str, delimiters);
+
+    while (pch != NULL)
+    {
+      result[i] = pch;
+      pch = strtok(NULL, delimiters);
+      ++i;
+    }
+
+    return result;
+}
+
+int countDelimiters(char str[], const char* delimiters) {
+    int i, j, result = 0;
+    for (i = 0; i < strlen(str); ++i) {
+        for (j = 0; j < strlen(delimiters); ++j) {
+            if (str[i] == delimiters[j]) {
+                ++result;
+            }
+        }
+    }
+    return (result + 1);
+}
 

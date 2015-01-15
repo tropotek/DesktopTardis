@@ -508,7 +508,7 @@
             <Property name="text" type="java.lang.String" value="Enable Temp Sensor"/>
           </Properties>
           <Events>
-            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="inputTempEnableStateChanged"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="inputTempEnableActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JSlider" name="jSlider5">

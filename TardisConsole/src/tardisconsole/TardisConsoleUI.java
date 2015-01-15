@@ -345,9 +345,9 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         });
 
         inputTempEnable.setText("Enable Temp Sensor");
-        inputTempEnable.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                inputTempEnableStateChanged(evt);
+        inputTempEnable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inputTempEnableActionPerformed(evt);
             }
         });
 
@@ -655,14 +655,6 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         tardisUpdated();
     }//GEN-LAST:event_jTextField1FocusLost
 
-    private void inputTempEnableStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_inputTempEnableStateChanged
-        // TODO add your handling code here:
-        javax.swing.JCheckBox source = (javax.swing.JCheckBox) evt.getSource();
-        if (ti != null)
-            ti.setWinTempSensor(source.isSelected());
-        tardisUpdated();
-    }//GEN-LAST:event_inputTempEnableStateChanged
-
     private void inputTrackNoStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_inputTrackNoStateChanged
         // TODO add your handling code here:
         javax.swing.JSpinner source = (javax.swing.JSpinner) evt.getSource();
@@ -745,7 +737,7 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         // TODO add your handling code here:
         javax.swing.JCheckBox source = (javax.swing.JCheckBox) evt.getSource();
         if (ti != null)
-          ti.setTopLight(source.isSelected());
+          ti.enableTopLed(source.isSelected());
         tardisUpdated();
     }//GEN-LAST:event_inputTopEnableActionPerformed
 
@@ -753,9 +745,17 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         // TODO add your handling code here:
         javax.swing.JCheckBox source = (javax.swing.JCheckBox) evt.getSource();
         if (ti != null)
-          ti.setWinLight(source.isSelected());
+          ti.enableWinLed(source.isSelected());
         tardisUpdated();
     }//GEN-LAST:event_inputWinEnableActionPerformed
+
+    private void inputTempEnableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputTempEnableActionPerformed
+        // TODO add your handling code here:
+        javax.swing.JCheckBox source = (javax.swing.JCheckBox) evt.getSource();
+        if (ti != null)
+            ti.enableWinTempLed(source.isSelected());
+        tardisUpdated();
+    }//GEN-LAST:event_inputTempEnableActionPerformed
 
     
     private void updateTopColor(int r, int g, int b)
@@ -817,11 +817,12 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
     
     public void loadData(TardisInterface t)
     {
-        inputTempEnable.setSelected(t.isWinTempSensor());
-        inputTopEnable.setSelected(t.isTopLight());
+        inputTopEnable.setSelected(t.topLedEnabled());
+        inputWinEnable.setSelected(t.winLedEnabled());
+        inputTempEnable.setSelected(t.winTempLedEnabled());
         inputTrackNo.setValue(t.getTrackId());
-        inputWinEnable.setSelected(t.isWinLight());
-        int tc[] = t.getTopColor();
+        
+        int tc[] = t.getTopLed();
         jSlider1.setValue(tc[0]);
         jSlider2.setValue(tc[1]);
         jSlider3.setValue(tc[2]);
@@ -830,7 +831,7 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         jTextField4.setText(tc[2]+""); 
         jTextField8.setBackground(new java.awt.Color(tc[0], tc[1], tc[2]));
         
-        int wc[] = t.getWinColor();
+        int wc[] = t.getWinLed();
         jSlider4.setValue(wc[0]);
         jSlider5.setValue(wc[1]);
         jSlider6.setValue(wc[2]);
@@ -851,9 +852,11 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         if (ti == null) {
             return;
         }
+        // Write to Tardis
         ti.writeSettings();
-        
+        // 
         jLabel1.setText(ti.getTemp()+"°C");
+        loadData(ti);
     }
     
     public void errorExit(String msg) 

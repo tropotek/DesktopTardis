@@ -36,7 +36,7 @@ public:
   // Get the system state string
   void sendState();
   
-  void saveState(String s);
+  void saveState(char **val);
   
   
   

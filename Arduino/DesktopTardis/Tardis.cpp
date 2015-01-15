@@ -31,12 +31,18 @@ void Tardis::loop()
    _frame++;
 }
 
-  void Tardis::saveState(String s)
+  void Tardis::saveState(char **val)
   {
-    Serial.println("# saving TARDIS state");
+//    Serial.println("# Saving TARDIS state");
+//    Serial.print("# ");
+//    Serial.println((strcmp(val[2], "true") == 0) ? "true" : "false");
+
+    _topLedEnabled = (strcmp(val[2], "true") == 0) ? true : false;
     
-    // TODO
     
+    _winLedEnabled = (strcmp(val[7], "true") == 0) ? true : false;
+    delay(500);
+    sendState();
   }
  
 // Return the tardis state as a string
@@ -45,8 +51,6 @@ void Tardis::sendState()
   Serial.print("S00 ");
 
   Serial.print(getTemp(), 2);        // Temprature value in DegC
-  Serial.print(" ");
-  
   Serial.print(" ");
   Serial.print(_topLedEnabled);      // Top Light Enabled
   Serial.print(" ");
@@ -60,19 +64,19 @@ void Tardis::sendState()
   Serial.print(" ");
   Serial.print(_winLedEnabled);      // Window Light Enabled
   Serial.print(" ");
-  Serial.print(_topLed.getRed());    // Window light Red
-  Serial.print(" ");
-  Serial.print(_topLed.getGreen());  // window light Green
-  Serial.print(" ");
-  Serial.print(_topLed.getBlue());   //Window lisght Blue
-  Serial.print(" ");
   Serial.print(_winTempLed);         // Window temp display enabled
+  Serial.print(" ");
+  Serial.print(_winLed.getRed());    // Window light Red
+  Serial.print(" ");
+  Serial.print(_winLed.getGreen());  // window light Green
+  Serial.print(" ");
+  Serial.print(_winLed.getBlue());   // Window lisght Blue
   Serial.print(" ");
   Serial.print(_trackId);            // Current audio track ID
   Serial.print(" ");
-  Serial.print(_sound.isBusy());                 // Is audio currently playing
+  Serial.print(_sound.isBusy());     // Is audio currently playing
   Serial.print(" ");
-  Serial.print("0");    // play track
+  Serial.print("0");                 // play track
   Serial.print(" ");
   Serial.print("0");    // Reserved
   Serial.print(" ");
@@ -85,7 +89,9 @@ void Tardis::sendState()
   Serial.print("0");    // Reserved
   Serial.println();
 }
- 
+
+
+
  // Get the temprature from a 100K Thermistor
 double Tardis::getTemp()
 {
