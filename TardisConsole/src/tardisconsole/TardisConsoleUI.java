@@ -115,8 +115,10 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         jLabel6 = new javax.swing.JLabel();
         inputTrackNo = new javax.swing.JSpinner();
         btnPlayTrack = new javax.swing.JButton();
+        stopBtn = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
         labelTitle = new javax.swing.JLabel();
+        reloadBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("T.A.R.D.I.S Console");
@@ -475,7 +477,10 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
 
         jLabel6.setText("Track #");
 
+        inputTrackNo.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
         inputTrackNo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        inputTrackNo.setDoubleBuffered(true);
+        inputTrackNo.setEditor(new javax.swing.JSpinner.NumberEditor(inputTrackNo, ""));
         inputTrackNo.setFocusCycleRoot(true);
         inputTrackNo.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -491,6 +496,13 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
             }
         });
 
+        stopBtn.setText("Stop");
+        stopBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -502,6 +514,8 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
                 .addComponent(inputTrackNo, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnPlayTrack)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(stopBtn)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -510,7 +524,8 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(inputTrackNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnPlayTrack))
+                    .addComponent(btnPlayTrack)
+                    .addComponent(stopBtn))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -525,6 +540,13 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         labelTitle.setFont(new java.awt.Font("Trajan Pro", 1, 24)); // NOI18N
         labelTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelTitle.setText("T.A.R.D.I.S.");
+
+        reloadBtn.setText("Reload");
+        reloadBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reloadBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -541,6 +563,8 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(reloadBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnClose)
                 .addContainerGap())
         );
@@ -560,7 +584,9 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnClose)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnClose)
+                    .addComponent(reloadBtn))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -650,23 +676,26 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         // TODO add your handling code here:
         javax.swing.JTextField source = (javax.swing.JTextField) evt.getSource();
         int delay = Integer.parseInt(source.getText());
-        if (ti != null)
+        if (ti != null) {
             ti.setTopDelay(delay);
+        }
         tardisUpdated();
     }//GEN-LAST:event_jTextField1FocusLost
 
     private void inputTrackNoStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_inputTrackNoStateChanged
         // TODO add your handling code here:
         javax.swing.JSpinner source = (javax.swing.JSpinner) evt.getSource();
-        if (ti != null)
-            ti.setTrackId(Integer.parseInt(source.getValue().toString()));
-        tardisUpdated();
+        int val = Integer.parseInt(source.getValue().toString()) - 1;
+        if (ti != null) {
+            ti.setTrackId(val);
+        }
     }//GEN-LAST:event_inputTrackNoStateChanged
 
     private void btnPlayTrackMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPlayTrackMouseReleased
         // TODO add your handling code here:
+        int val = Integer.parseInt(inputTrackNo.getValue().toString()) - 1;
         if (ti != null)
-            ti.playTrack(Integer.parseInt(inputTrackNo.getValue().toString()));
+            ti.playTrack(val);
         tardisUpdated();
     }//GEN-LAST:event_btnPlayTrackMouseReleased
 
@@ -677,7 +706,7 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
             btnConnect.setText("Disconnect");
             try {
                 int baud = Integer.valueOf(jComboBox1.getSelectedItem().toString());
-                ti = new TardisInterface(jComboBox2.getSelectedItem().toString(), baud);
+                ti = new TardisInterface(this, jComboBox2.getSelectedItem().toString(), baud);
                 // Set button to a dissconnect button....
                 // If all connected ok then enable the tardis controls
                 enableTardis(true);
@@ -736,16 +765,19 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
     private void inputTopEnableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputTopEnableActionPerformed
         // TODO add your handling code here:
         javax.swing.JCheckBox source = (javax.swing.JCheckBox) evt.getSource();
-        if (ti != null)
-          ti.enableTopLed(source.isSelected());
+        if (ti != null) {
+            ti.enableTopLed(source.isSelected());
+            enableTopLed(source.isSelected());
+        }
         tardisUpdated();
     }//GEN-LAST:event_inputTopEnableActionPerformed
 
     private void inputWinEnableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputWinEnableActionPerformed
         // TODO add your handling code here:
         javax.swing.JCheckBox source = (javax.swing.JCheckBox) evt.getSource();
-        if (ti != null)
+        if (ti != null) {
           ti.enableWinLed(source.isSelected());
+        }
         tardisUpdated();
     }//GEN-LAST:event_inputWinEnableActionPerformed
 
@@ -756,6 +788,17 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
             ti.enableWinTempLed(source.isSelected());
         tardisUpdated();
     }//GEN-LAST:event_inputTempEnableActionPerformed
+
+    private void reloadBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reloadBtnActionPerformed
+        // TODO add your handling code here:
+        ti.writeData("S00");
+    }//GEN-LAST:event_reloadBtnActionPerformed
+
+    private void stopBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopBtnActionPerformed
+        // TODO add your handling code here:
+        ti.stopTrack();
+        tardisUpdated();
+    }//GEN-LAST:event_stopBtnActionPerformed
 
     
     private void updateTopColor(int r, int g, int b)
@@ -793,26 +836,51 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
     public void enableTardis(boolean b)
     {
         btnPlayTrack.setEnabled(b);
-        inputTempEnable.setEnabled(b);
         inputTopEnable.setEnabled(b);
         inputTrackNo.setEnabled(b);
         inputWinEnable.setEnabled(b);
-        jSlider1.setEnabled(b);
-        jSlider2.setEnabled(b);
-        jSlider3.setEnabled(b);
-        jSlider4.setEnabled(b);
-        jSlider5.setEnabled(b);
-        jSlider6.setEnabled(b);
-        jTextField1.setEnabled(b); 
-        jTextField2.setEnabled(b); 
-        jTextField3.setEnabled(b); 
-        jTextField4.setEnabled(b); 
-        jTextField5.setEnabled(b); 
-        jTextField6.setEnabled(b); 
-        jTextField7.setEnabled(b); 
+        enableTopLed(b);
+        enableWinLed(b);  
         jTextField8.setEnabled(b); 
         jTextField9.setEnabled(b); 
+        reloadBtn.setEnabled(b);
+        stopBtn.setEnabled(b);
         
+        jLabel2.setEnabled(false);
+        jTextField1.setEnabled(false);
+        inputTempEnable.setEnabled(false);
+    }
+    
+    public void enableTopLed(boolean b)
+    {
+        // TODO: enable when working
+        //jTextField1.setEnabled(b); 
+        
+        jLabel3.setEnabled(b);
+        jSlider1.setEnabled(b);
+        jLabel4.setEnabled(b);
+        jSlider2.setEnabled(b);
+        jLabel5.setEnabled(b);
+        jSlider3.setEnabled(b);
+        jTextField2.setEnabled(b); 
+        jTextField3.setEnabled(b); 
+        jTextField4.setEnabled(b);
+    }
+    
+    public void enableWinLed(boolean b)
+    {
+        // TODO: enable when working
+        //inputTempEnable.setEnabled(b);
+        
+        jLabel9.setEnabled(b);
+        jSlider4.setEnabled(b);
+        jLabel10.setEnabled(b);
+        jSlider5.setEnabled(b);
+        jLabel11.setEnabled(b);
+        jSlider6.setEnabled(b);
+        jTextField5.setEnabled(b); 
+        jTextField6.setEnabled(b); 
+        jTextField7.setEnabled(b);
     }
     
     public void loadData(TardisInterface t)
@@ -820,7 +888,7 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         inputTopEnable.setSelected(t.topLedEnabled());
         inputWinEnable.setSelected(t.winLedEnabled());
         inputTempEnable.setSelected(t.winTempLedEnabled());
-        inputTrackNo.setValue(t.getTrackId());
+        inputTrackNo.setValue(t.getTrackId()+1);
         
         int tc[] = t.getTopLed();
         jSlider1.setValue(tc[0]);
@@ -841,6 +909,10 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         jTextField9.setBackground(new java.awt.Color(wc[0], wc[1], wc[2]));
         
         jTextField1.setText(t.getTopDelay()+""); 
+        jLabel1.setText(ti.getTemp()+"°C");
+        
+        enableTopLed(t.topLedEnabled());
+        enableWinLed(t.winLedEnabled());
         
     }
     
@@ -854,9 +926,6 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         }
         // Write to Tardis
         ti.writeSettings();
-        // 
-        jLabel1.setText(ti.getTemp()+"°C");
-        loadData(ti);
     }
     
     public void errorExit(String msg) 
@@ -915,5 +984,7 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
     private javax.swing.JTextField jTextField8;
     private javax.swing.JTextField jTextField9;
     private javax.swing.JLabel labelTitle;
+    private javax.swing.JButton reloadBtn;
+    private javax.swing.JButton stopBtn;
     // End of variables declaration//GEN-END:variables
 }

@@ -56,8 +56,12 @@ public class TardisInterface implements SerialPortEventListener {
     private boolean isPlayingTrack = false;
     /** If true the next time an update is sent the selected track should begin playing */
     private boolean playTrack = false;
+    /** If true the next time an update is sent the selected track should begin playing */
+    private boolean stopTrack = false;
     
+    private TardisConsoleUI ui;
     
+    private static boolean debug = true;
         
     /**
      * _constructor
@@ -65,16 +69,24 @@ public class TardisInterface implements SerialPortEventListener {
      * @param comPort
      * @param baud 
      */
-    public TardisInterface(String comPort, int baud) throws Exception
+    public TardisInterface(TardisConsoleUI ui, String comPort, int baud) throws Exception
     {
+        this.ui = ui;
         setComPort(comPort);
         setBaud(baud);
         connectSerial();
+        try {
+            Thread.sleep(1000);                 //1000 milliseconds is one second.
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+        writeData("S00");
     }
     
     
     /**
      * 
+     * @throws java.lang.Exception
      */
     public void connectSerial() throws Exception 
     {
@@ -91,8 +103,7 @@ public class TardisInterface implements SerialPortEventListener {
         }
         
         if (portId == null) {
-            System.out.println("Could not find COM port: " + comPort);
-            return;
+            throw new Exception("Could not find COM port: " + comPort);
         }
 
         try {
@@ -115,7 +126,8 @@ public class TardisInterface implements SerialPortEventListener {
             // add event listeners
             serialPort.addEventListener(this);
             serialPort.notifyOnDataAvailable(true);
-            System.out.println("TARDIS: Connected");
+            
+            vd("TARDIS: Connected");
         } catch (Exception e) {
             throw e;
         }
@@ -126,12 +138,15 @@ public class TardisInterface implements SerialPortEventListener {
         if (serialPort != null) {
             serialPort.removeEventListener();
             serialPort.close();
-            System.out.println("TARDIS: Disconnected");
+            vd("TARDIS: Disconnected");
         }
     }
 
     public synchronized void serialEvent(SerialPortEvent oEvent) 
     {
+//        if (oEvent.getEventType() == SerialPortEvent.) {
+//            
+//        }
         if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             try {
                 String inputLine = input.readLine();
@@ -145,7 +160,7 @@ public class TardisInterface implements SerialPortEventListener {
 
     public static synchronized void writeData(String data) 
     {
-        System.out.println("Sent: " + data);
+        vd("Sent: " + data);
         try {
             data += "\n";
             output.write(data.getBytes());
@@ -159,17 +174,13 @@ public class TardisInterface implements SerialPortEventListener {
      */
     public void readData(String str)
     {
+        System.out.println("Recv: " + str);
+            
         // Read the settings from the TARDIS Serial Port
         if (str.startsWith("#")) { // Is a system comment/log
             System.out.println(str);
         } else if (str.startsWith("S00")) { // receving TARDIS update
             String[] data = str.substring(4).split(" ");
-            
-            System.out.println("-----------------------------------");
-            System.out.println(topLedEnabled);
-            System.out.println(data[1]);
-            System.out.println(data[1].trim().equals("1"));
-            System.out.println("-----------------------------------");
             
             temp = Double.parseDouble(data[0]);
             topLedEnabled = data[1].trim().equals("1");
@@ -184,7 +195,7 @@ public class TardisInterface implements SerialPortEventListener {
             winLed[2] = Integer.parseInt(data[10]);
             trackId = Integer.parseInt(data[11]);
             isPlayingTrack = data[12].trim().equals("1");
-            //System.out.println("Interface Update: " + str);
+            ui.loadData(this);
         } else {
             System.out.println("Unknown CMD: " + str);
         }
@@ -192,7 +203,6 @@ public class TardisInterface implements SerialPortEventListener {
     
     public synchronized void writeSettings()
     {
-        System.out.println(this.toString());
         String data = "S01 " +
             temp+" "+
             topLedEnabled+" "+
@@ -208,13 +218,14 @@ public class TardisInterface implements SerialPortEventListener {
             trackId+" "+
             isPlayingTrack+" "+
             playTrack+" "+    // Play track switch 
-            "0 " +  // Reserved
+            stopTrack+" " +  // stop Track Switch
             "0 " +  // Reserved
             "0 " +  // Reserved
             "0 " +  // Reserved
             "0 "    // Reserved
             ;
         playTrack = false;  // Once sent then no longer needed
+        stopTrack = false;  // Once sent then no longer needed
         writeData(data);
     }
     
@@ -253,6 +264,7 @@ public class TardisInterface implements SerialPortEventListener {
     
     public void enableTopLed(boolean b) {
         topLedEnabled = b;
+        ui.enableTopLed(b);
     }
 
     public void setTopColor(int r, int g, int b) {
@@ -267,6 +279,7 @@ public class TardisInterface implements SerialPortEventListener {
 
     public void enableWinLed(boolean b) {
         winLedEnabled = b;
+        ui.enableWinLed(b);
     }
 
     public void setWinColor(int r, int g, int b) {
@@ -326,6 +339,17 @@ public class TardisInterface implements SerialPortEventListener {
         playTrack = true;
     }
     
+    public void stopTrack()
+    {
+        stopTrack = true;
+    }
+    
+    private static void vd(String str)
+    {
+        if (debug) {
+            System.out.println(str);
+        }
+    }
     
     
     public String toString()
@@ -340,7 +364,8 @@ public class TardisInterface implements SerialPortEventListener {
                 "winTempLed: " + winTempLed + "\n" +
                 "trackId: " + trackId + "\n" +
                 "isPlayingTrack: " + isPlayingTrack + "\n"  +
-                "playTrack: " + playTrack + "\n" 
+                "playTrack: " + playTrack + "\n"   +
+                "stopTrack: " + stopTrack + "\n" 
                 ;
         return str;
     }

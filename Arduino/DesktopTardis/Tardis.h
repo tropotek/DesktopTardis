@@ -25,43 +25,44 @@ class Tardis
 {
 public:
   Tardis(int *topLedPins, int *winLedPins, int *audioPins, int tempPin);
-  
+
+  void setup();  
   // Animation loop
   void loop();  
-  
+
   // Get the temprature in DegC from the Thermistor
   double getTemp();
-  
+
   // ----------- Serial Command Functions ---------------
   // Get the system state string
   void sendState();
-  
+
   void saveState(char **val);
-  
-  
-  
+
+
+
 private:
   int _tempPin;
-  
+
   // counter for animation frames
   int unsigned _frame;
-  
+
   bool _topLedEnabled;
   int _topDelay;
   RgbLed _topLed;
-  
+
   bool _winLedEnabled;
   bool _winTempLed;
   RgbLed _winLed;
-  
+
   int _trackId;
-  bool _playTrack;
   Wtv020sd16p _sound;
-  
-  
+
+
 };
 
 #endif
+
 
 
 

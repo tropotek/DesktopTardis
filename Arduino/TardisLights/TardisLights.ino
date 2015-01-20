@@ -12,7 +12,7 @@
 // Mapped to PWM pins
 #include "Arduino.h"
 
-#include <Wtv020sd16p.h>
+#include "Wtv020sd16p.h"
 
 //  WTV020-SD-16P Sound module Pins
 int resetPin = 2;  // The pin number of the reset pin.

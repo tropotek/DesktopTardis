@@ -44,31 +44,37 @@ void setup() {
   Serial.begin(57600);
   Serial.println("# Initalising: TARDIS  v0.1 [07/01/2015]");
   Serial.println("# Support: http://zap.tropotek.com.au/");
+  tardis.setup();
+  
+  delay(500);
   tardis.sendState();
 }
 
 
 void loop() {
+  
+  
   long unsigned time = millis();
   int frameDelay = floor(1000/fps);
-  
+
   // receive any commands from the serial terminal
   if (Serial.available() > 0) {
-      String input = Serial.readStringUntil('\n');
-      processCmd(input);
+    String input = Serial.readStringUntil('\n');
+    processCmd(input);
   }
-  
+
   if ((time % frameDelay) == 0) {
     // Code to run on an animation frame
     tardis.loop();
   }
-  
+
 }
 
 void processCmd(String s) {
-  if (s == "S00") {  // Write system state to Serial out
+  if (s.startsWith("S00")) {  // Write system state to Serial out
     tardis.sendState();
-  } else if (s.startsWith("S01")) {  // write state to Tardis object
+  } 
+  else if (s.startsWith("S01")) {  // write state to Tardis object
     char cs[100];
     s.toCharArray(cs, 100);
     tardis.saveState(split(cs, " "));
@@ -80,30 +86,32 @@ void processCmd(String s) {
 
 
 char** split(char str[], const char* delimiters) {
-    int result_size = countDelimiters(str, delimiters);
-    int i = 0;
-    char* result[result_size];
-    char* pch = strtok(str, delimiters);
+  int result_size = countDelimiters(str, delimiters);
+  int i = 0;
+  char* result[result_size];
+  char* pch = strtok(str, delimiters);
 
-    while (pch != NULL)
-    {
-      result[i] = pch;
-      pch = strtok(NULL, delimiters);
-      ++i;
-    }
+  while (pch != NULL)
+  {
+    result[i] = pch;
+    pch = strtok(NULL, delimiters);
+    ++i;
+  }
 
-    return result;
+  return result;
 }
 
 int countDelimiters(char str[], const char* delimiters) {
-    int i, j, result = 0;
-    for (i = 0; i < strlen(str); ++i) {
-        for (j = 0; j < strlen(delimiters); ++j) {
-            if (str[i] == delimiters[j]) {
-                ++result;
-            }
-        }
+  int i, j, result = 0;
+  for (i = 0; i < strlen(str); ++i) {
+    for (j = 0; j < strlen(delimiters); ++j) {
+      if (str[i] == delimiters[j]) {
+        ++result;
+      }
     }
-    return (result + 1);
+  }
+  return (result + 1);
+  
 }
+
 
