@@ -603,8 +603,9 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
         // TODO add your handling code here:
         JSlider source = (JSlider)evt.getSource();
-        if (!source.getValueIsAdjusting()) 
+        if (!source.getValueIsAdjusting()) {
             updateTopColor(jSlider1.getValue(), jSlider2.getValue(), jSlider3.getValue());
+        }
     }//GEN-LAST:event_jSlider1StateChanged
 
     private void jSlider2StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider2StateChanged
@@ -613,8 +614,9 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         Class c = source.getClass();
         String controlName = c.getName();
         if (controlName == "javax.swing.JSlider") {
-        if (!source.getValueIsAdjusting()) 
-            updateTopColor(jSlider1.getValue(), jSlider2.getValue(), jSlider3.getValue());
+            if (!source.getValueIsAdjusting())  {
+                updateTopColor(jSlider1.getValue(), jSlider2.getValue(), jSlider3.getValue());
+            }
         }
     }//GEN-LAST:event_jSlider2StateChanged
 
@@ -624,8 +626,9 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         Class c = source.getClass();
         String controlName = c.getName();
         if (controlName == "javax.swing.JSlider") {
-            if (!source.getValueIsAdjusting()) 
+            if (!source.getValueIsAdjusting()) {
                 updateTopColor(jSlider1.getValue(), jSlider2.getValue(), jSlider3.getValue());
+            }
         }
     }//GEN-LAST:event_jSlider3StateChanged
 
@@ -637,8 +640,9 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         Class c = source.getClass();
         String controlName = c.getName();
         if (controlName == "javax.swing.JSlider") {
-            if (!source.getValueIsAdjusting()) 
+            if (!source.getValueIsAdjusting() && source.hasFocus()) {
                 updateWinColor(jSlider4.getValue(), jSlider5.getValue(), jSlider6.getValue());
+            }
         }
     }//GEN-LAST:event_jSlider4StateChanged
 
@@ -648,8 +652,9 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         Class c = source.getClass();
         String controlName = c.getName();
         if (controlName == "javax.swing.JSlider") {
-            if (!source.getValueIsAdjusting()) 
+            if (!source.getValueIsAdjusting() && source.hasFocus()) {
                 updateWinColor(jSlider4.getValue(), jSlider5.getValue(), jSlider6.getValue());
+            }
         }
     }//GEN-LAST:event_jSlider5StateChanged
 
@@ -659,8 +664,9 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         Class c = source.getClass();
         String controlName = c.getName();
         if (controlName == "javax.swing.JSlider") {
-            if (!source.getValueIsAdjusting()) 
+            if (!source.getValueIsAdjusting() && source.hasFocus()) {
                 updateWinColor(jSlider4.getValue(), jSlider5.getValue(), jSlider6.getValue());
+            }
         }
     }//GEN-LAST:event_jSlider6StateChanged
 
@@ -678,8 +684,8 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         int delay = Integer.parseInt(source.getText());
         if (ti != null) {
             ti.setTopDelay(delay);
+            tardisUpdated();
         }
-        tardisUpdated();
     }//GEN-LAST:event_jTextField1FocusLost
 
     private void inputTrackNoStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_inputTrackNoStateChanged
@@ -694,9 +700,10 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
     private void btnPlayTrackMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnPlayTrackMouseReleased
         // TODO add your handling code here:
         int val = Integer.parseInt(inputTrackNo.getValue().toString()) - 1;
-        if (ti != null)
+        if (ti != null) {
             ti.playTrack(val);
-        tardisUpdated();
+            tardisUpdated();
+        }
     }//GEN-LAST:event_btnPlayTrackMouseReleased
 
     private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
@@ -768,30 +775,31 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         if (ti != null) {
             ti.enableTopLed(source.isSelected());
             enableTopLed(source.isSelected());
+            tardisUpdated();
         }
-        tardisUpdated();
     }//GEN-LAST:event_inputTopEnableActionPerformed
 
     private void inputWinEnableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputWinEnableActionPerformed
         // TODO add your handling code here:
         javax.swing.JCheckBox source = (javax.swing.JCheckBox) evt.getSource();
         if (ti != null) {
-          ti.enableWinLed(source.isSelected());
+            ti.enableWinLed(source.isSelected());
+            tardisUpdated();
         }
-        tardisUpdated();
     }//GEN-LAST:event_inputWinEnableActionPerformed
 
     private void inputTempEnableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputTempEnableActionPerformed
         // TODO add your handling code here:
         javax.swing.JCheckBox source = (javax.swing.JCheckBox) evt.getSource();
-        if (ti != null)
+        if (ti != null) {
             ti.enableWinTempLed(source.isSelected());
-        tardisUpdated();
+            tardisUpdated();
+        }
     }//GEN-LAST:event_inputTempEnableActionPerformed
 
     private void reloadBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reloadBtnActionPerformed
         // TODO add your handling code here:
-        ti.writeData("S00");
+        TardisInterface.writeData("S00");
     }//GEN-LAST:event_reloadBtnActionPerformed
 
     private void stopBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopBtnActionPerformed
@@ -811,9 +819,10 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         jSlider2.setValue(g);
         jSlider3.setValue(b);
         
-        ti.setTopColor(jSlider1.getValue(), jSlider2.getValue(), jSlider3.getValue());
-        jTextField8.setBackground(new java.awt.Color(jSlider1.getValue(), jSlider2.getValue(), jSlider3.getValue()));
-        
+        if (ti != null) {
+            ti.setTopColor(jSlider1.getValue(), jSlider2.getValue(), jSlider3.getValue());
+            jTextField8.setBackground(new java.awt.Color(jSlider1.getValue(), jSlider2.getValue(), jSlider3.getValue()));
+        }
         tardisUpdated();
     }
     
@@ -826,9 +835,9 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         jSlider4.setValue(r);
         jSlider5.setValue(g);
         jSlider6.setValue(b);
-        jTextField9.setBackground(new java.awt.Color(jSlider4.getValue(), jSlider5.getValue(), jSlider6.getValue()));
         if (ti != null) {
             ti.setWinColor(jSlider4.getValue(), jSlider5.getValue(), jSlider6.getValue());
+            jTextField9.setBackground(new java.awt.Color(jSlider4.getValue(), jSlider5.getValue(), jSlider6.getValue()));
             tardisUpdated();
         }
     }
@@ -839,23 +848,22 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         inputTopEnable.setEnabled(b);
         inputTrackNo.setEnabled(b);
         inputWinEnable.setEnabled(b);
-        enableTopLed(b);
-        enableWinLed(b);  
         jTextField8.setEnabled(b); 
         jTextField9.setEnabled(b); 
         reloadBtn.setEnabled(b);
         stopBtn.setEnabled(b);
         
-        jLabel2.setEnabled(false);
-        jTextField1.setEnabled(false);
-        inputTempEnable.setEnabled(false);
+        enableTopLed(b);
+        enableWinLed(b);  
+        
+        jTextField1.setEnabled(b);
+        jLabel2.setEnabled(b);
+        
+        inputTempEnable.setEnabled(b);
     }
     
     public void enableTopLed(boolean b)
     {
-        // TODO: enable when working
-        //jTextField1.setEnabled(b); 
-        
         jLabel3.setEnabled(b);
         jSlider1.setEnabled(b);
         jLabel4.setEnabled(b);
@@ -869,9 +877,6 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
     
     public void enableWinLed(boolean b)
     {
-        // TODO: enable when working
-        //inputTempEnable.setEnabled(b);
-        
         jLabel9.setEnabled(b);
         jSlider4.setEnabled(b);
         jLabel10.setEnabled(b);
@@ -909,10 +914,13 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
         jTextField9.setBackground(new java.awt.Color(wc[0], wc[1], wc[2]));
         
         jTextField1.setText(t.getTopDelay()+""); 
-        jLabel1.setText(ti.getTemp()+"°C");
+        jLabel1.setText(t.getTemp()+"°C");
         
         enableTopLed(t.topLedEnabled());
         enableWinLed(t.winLedEnabled());
+        if (t.winTempLedEnabled()) {
+            enableWinLed(false);
+        }
         
     }
     

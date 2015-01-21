@@ -24,28 +24,45 @@ _topLed(topLedPins), _winLed(winLedPins), _sound(audioPins[0], audioPins[1], aud
 void Tardis::setup()
 {
   _topLed.initPins();
+  _topLed.setBrightness(0.2);
   _winLed.initPins();
   // This stops serial out for some reason?
   _sound.reset();
 }
 
+
+
+
 void Tardis::loop()
 {
-  // TODO: run requested animations
+  if (_winTempLed) {
+      _winLed.setTemperatureColor(getTemp(), T_TEMP_LED_MIN, T_TEMP_LED_MAX);
+  }
   if (_topLedEnabled) {
+    // Run Top LED Animations 
+    
+    
+    
     _topLed.writePins();
   } else {
     _topLed.off();
   }
   
-  if (_winLedEnabled){ 
+  if (_winLedEnabled){
+    // Run window LED Animations
+    
+    
+    
     _winLed.writePins();
   } else {
     _winLed.off();
   }
-
+  
   _frame++;
 }
+
+
+
 
 void Tardis::saveState(char **val)
 {
@@ -64,10 +81,14 @@ void Tardis::saveState(char **val)
   _winTempLed = (strcmp(val[8], "true") == 0) ? true : false;
   
   if (_winLedEnabled) {
-    _winLed.setRed(atoi(val[9]));
-    _winLed.setGreen(atoi(val[10]));
-    _winLed.setBlue(atoi(val[11]));
-  } 
+    if (_winTempLed) {
+      _winLed.setTemperatureColor(getTemp(), T_TEMP_LED_MIN, T_TEMP_LED_MAX);
+    } else {
+      _winLed.setRed(atoi(val[9]));
+      _winLed.setGreen(atoi(val[10]));
+      _winLed.setBlue(atoi(val[11]));
+    }
+  }
   
   _trackId = atoi(val[12]);
   // Should we start playing an audio track?

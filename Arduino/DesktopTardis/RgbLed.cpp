@@ -22,6 +22,7 @@ RgbLed::RgbLed(int *ledPins)
   _gPin = ledPins[RGB_GREEN];
   _bPin = ledPins[RGB_BLUE];
   _r = _g = _b = 0;
+  _dr = _dg = _db = 1.0;
 }
 RgbLed::RgbLed(int rPin, int gPin, int bPin)
 {
@@ -29,6 +30,7 @@ RgbLed::RgbLed(int rPin, int gPin, int bPin)
   _gPin = gPin;
   _bPin = bPin;
   _r = _g = _b = 0;
+  _dr = _dg = _db = 1.0;
 }
 
 void RgbLed::initPins()
@@ -40,9 +42,9 @@ void RgbLed::initPins()
 void RgbLed::writePins()
 {
   initPins();
-  analogWrite(_rPin, _r);
-  analogWrite(_gPin, _g);
-  analogWrite(_bPin, _b);
+  analogWrite(_rPin, (_r*_dr));
+  analogWrite(_gPin, (_g*_dg));
+  analogWrite(_bPin, (_b*_db));
 }
 void RgbLed::off()
 {
@@ -58,20 +60,17 @@ void RgbLed::setRgb(int r, int g, int b)
   setRed(r);
   setGreen(g);
   setBlue(b);
-
-  writePins();
 }
 void RgbLed::setRgb(int *rgb) 
 {
-  //    setRed(rgb[RGB_RED]);
-  //    setGreen(rgb[RGB_GREEN]);
-  //    setBlue(rgb[RGB_BLUE]);
-  // Try this using an incremental pointer
-  setRed(*rgb);
-  setGreen(*rgb+1);
-  setBlue(*rgb+2);
+  setRed(rgb[RGB_RED]);
+  setGreen(rgb[RGB_GREEN]);
+  setBlue(rgb[RGB_BLUE]);
+}
 
-  writePins();
+void RgbLed::setBrightness(float f)
+{
+  _dr = _dg = _db = clampRatio(f);
 }
 
 
@@ -138,11 +137,8 @@ void RgbLed::hsi2rgb(float H, float S, float I, int* rgb) {
  *
  *
  */
-void RgbLed::setTemperatureColor(float degC)
+void RgbLed::setTemperatureColor(float degC, float min, float max)
 {
-  float min = 10;
-  float max = 37;
-
   // Map the temperature to a 0-1 range
   float a = (degC + abs(min)) / (abs(min)+max);
   //float a = (degC + 30) / 60;
@@ -157,7 +153,7 @@ void RgbLed::setTemperatureColor(float degC)
   int h = (h0) * (1 - a) + (h1) * (a);
   // Convert to RGB int values
   int rgb[3];
-  hsi2rgb(h, 75, 150, rgb);
+  hsi2rgb(h, 100, 200, rgb);
   setRgb(rgb);
 }
 
@@ -170,8 +166,11 @@ int RgbLed::clamp(int i)
   if (i < 0) i = 0;
   return i;
 }
-
-
-
+float RgbLed::clampRatio(float f)
+{
+  if (f > 1) f = 1.0;
+  if (f < 0) f = 0.0;
+  return f;
+}
 
 

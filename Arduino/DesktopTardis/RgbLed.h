@@ -18,6 +18,7 @@ public:
 
   void setRgb(int r, int g, int b);
   void setRgb(int *rgb);
+  void setBrightness(float f);
 
   void setRed(int r);
   void setGreen(int g);
@@ -28,7 +29,7 @@ public:
   int getBlue();
 
   void hsi2rgb(float H, float S, float I, int* rgb);
-  void setTemperatureColor(float degC);
+  void setTemperatureColor(float degC, float min, float max);
   
   void initPins();
   void writePins();
@@ -38,11 +39,18 @@ private:
   int _r;
   int _g;
   int _b;
+  
+  // brioghtnes ratios
+  float _dr;
+  float _dg;
+  float _db;
+  
   int _rPin;
   int _gPin;
   int _bPin;
 
   int clamp(int i);
+  float clampRatio(float f);
 };
 
 #endif

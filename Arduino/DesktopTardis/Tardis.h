@@ -21,6 +21,11 @@
 // the value of the 'other' resistor (100K)
 #define T_SERIESRESISTOR 10000 
 
+
+#define T_TEMP_LED_MIN 5
+#define T_TEMP_LED_MAX 35
+
+
 class Tardis
 {
 public:
