@@ -1,3 +1,10 @@
 /TardisConsole/build/
 /TardisConsole/dist/
-/TardisConsole/nbproject
+/TardisConsole/nbproject/
+/TardisConsole/build.xml
+/TardisConsole/manifest.mf
+/nbproject/
+/dist/
+/build/
+/build.xml
+/manifest.mf

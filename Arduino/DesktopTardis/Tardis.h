@@ -21,6 +21,8 @@
 // the value of the 'other' resistor (100K)
 #define T_SERIESRESISTOR 10000 
 
+// which analog pin to connect
+#define T_TEMP_NORMALIZE -7.6
 
 #define T_TEMP_LED_MIN 5
 #define T_TEMP_LED_MAX 35
