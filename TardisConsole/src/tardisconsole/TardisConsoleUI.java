@@ -36,6 +36,8 @@ public class TardisConsoleUI extends javax.swing.JFrame  {
     public TardisConsoleUI() {
         initComponents();
         
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("tardis.png")));
+        
         // wait till connected
         enableTardis(false);
         searchForPorts();
