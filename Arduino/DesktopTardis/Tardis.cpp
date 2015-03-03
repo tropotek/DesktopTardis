@@ -76,19 +76,6 @@ void Tardis::saveState(char **val)
     _topLed.setGreen(atoi(val[5]));
     _topLed.setBlue(atoi(val[6]));
   } 
-
-  _winLedEnabled = (strcmp(val[7], "true") == 0) ? true : false;
-  _winTempLed = (strcmp(val[8], "true") == 0) ? true : false;
-  
-  if (_winLedEnabled) {
-    if (_winTempLed) {
-      _winLed.setTemperatureColor(getTemp(), T_TEMP_LED_MIN, T_TEMP_LED_MAX);
-    } else {
-      _winLed.setRed(atoi(val[9]));
-      _winLed.setGreen(atoi(val[10]));
-      _winLed.setBlue(atoi(val[11]));
-    }
-  }
   
   _trackId = atoi(val[12]);
   // Should we start playing an audio track?
@@ -102,6 +89,19 @@ void Tardis::saveState(char **val)
   }
   if (strcmp(val[15], "true") == 0) {
     _sound.stopVoice();
+  }
+
+  _winLedEnabled = (strcmp(val[7], "true") == 0) ? true : false;
+  _winTempLed = (strcmp(val[8], "true") == 0) ? true : false;
+  
+  if (_winLedEnabled) {
+    if (_winTempLed) {
+      _winLed.setTemperatureColor(getTemp(), T_TEMP_LED_MIN, T_TEMP_LED_MAX);
+    } else {
+      _winLed.setRed(atoi(val[9]));
+      _winLed.setGreen(atoi(val[10]));
+      _winLed.setBlue(atoi(val[11]));
+    }
   }
   
   sendState();
@@ -166,7 +166,7 @@ double Tardis::getTemp()
   kelvin /= T_BCOEFFICIENT; // 1/B * ln(R/Ro)
   kelvin += 1.0 / (T_TEMPERATURENOMINAL + 273.15); // + (1/To)
   kelvin = 1.0 / kelvin; // Invert
-  return (kelvin - 273.15);
+  return (kelvin - 273.15) + T_TEMP_NORMALIZE;
 }
 
 
