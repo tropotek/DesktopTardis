@@ -81,12 +81,20 @@ void setup() {
 
 int anCnt = 0;
 void loop() {
-   if (!wtv020sd16p.isBusy()) {
-      // Play a tune
-      randomSeed(analogRead(tempPin));
-      //wtv020sd16p.asyncPlayVoice(random(0, 3));
-    }
-
+  
+  /*
+  // Uncomment to play continious sound clips.
+  // You may want to do something else like 
+  //  play on a button press or add a long delay so 
+  //  the sounds are not played so often, another cool 
+  //  option would be to implement a motion sensor and
+  //  trigger when somebody wals past.. have fun!!!
+  if (!wtv020sd16p.isBusy()) {
+    // Play a tune
+    randomSeed(analogRead(tempPin));
+    wtv020sd16p.asyncPlayVoice(random(0, 8));
+  }
+  */
 
   if (anCnt == 0) {
     cycle();
